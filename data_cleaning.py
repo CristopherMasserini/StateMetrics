@@ -25,6 +25,8 @@ def state_populations_adults(dfFull = None):
 
         dfNew[col] = numeric_col
 
+    dfNew[f'Adults{suffix}'] = dfNew[[g for g in groups if g != 'All ages']].sum(axis=1)
+
     return dfNew
 
 
