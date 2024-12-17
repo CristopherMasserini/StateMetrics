@@ -30,14 +30,39 @@ def state_populations_adults(dfFull = None):
     return dfNew
 
 
-def electoral_college(dfFull):
+def electoral_college():
     dfNew = pd.read_csv('Data/electoral_college_votes.csv')
-    dfFull = dfFull.merge(dfNew, left_on='State', right_on='State')
+    return dfNew
+
+
+def state_tax_burden(new_rank=False):
+    dfNew = pd.read_csv('Data/state_tax_burden.csv')
+    if new_rank:
+        effectiveRate = dfNew.loc[:, 'State-Local Effective Tax Rate Percentage']
+        erate_rank = effectiveRate.rank()
+        dfNew['Rank'] = erate_rank
+    else:
+        dfNew = dfNew.drop('Rank', axis=1)
+
+    return dfNew
+
+
+def merge_dfs(dataframes, by='State'):
+    dfFull = dataframes[0]
+
+    if len(dataframes) == 2:
+        dfFull = dfFull.merge(dataframes[1], left_on=by, right_on=by)
+    else:
+        for i in range(1, len(dataframes)):
+            dfFull = dfFull.merge(dataframes[i], left_on=by, right_on=by)
+
     return dfFull
 
 
 if __name__ == '__main__':
-    df = state_populations_adults()
-    df = electoral_college(df)
+    dfPops = state_populations_adults()
+    dfEC = electoral_college()
+    dfBurden = state_tax_burden()
 
+    df = merge_dfs([dfPops, dfEC, dfBurden])
     df.to_csv('Data/FullData.csv', index=False)
