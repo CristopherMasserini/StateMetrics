@@ -35,6 +35,10 @@ def electoral_college():
     return dfNew
 
 
+def air_water_metrics():
+    dfNew = pd.read_csv('Data/air_water_quality.csv')
+    return dfNew
+
 def state_tax_burden(new_rank=False):
     dfNew = pd.read_csv('Data/state_tax_burden.csv')
     if new_rank:
@@ -63,6 +67,7 @@ if __name__ == '__main__':
     dfPops = state_populations_adults()
     dfEC = electoral_college()
     dfBurden = state_tax_burden()
+    dfAirWater = air_water_metrics()
 
-    df = merge_dfs([dfPops, dfEC, dfBurden])
+    df = merge_dfs([dfPops, dfEC, dfBurden, dfAirWater])
     df.to_csv('Data/FullData.csv', index=False)
