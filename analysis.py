@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def votes_per_person(data_file):
@@ -23,5 +24,30 @@ def votes_per_person(data_file):
     pd.DataFrame(data).to_csv('Data/electoral_college_votes_per_adult.csv', index=False)
 
 
+def tax_vs_metrics(data_file, plot=False):
+    df = pd.read_csv(data_file)
+
+    if plot:
+        effective_tax = list(df.loc[:, 'State-Local Effective Tax Rate Percentage'])
+        air = list(df.loc[:, 'Air Quality'])
+        water = list(df.loc[:, 'Public Drinking Water'])
+
+        fig, ax1 = plt.subplots()
+
+        ax2 = ax1.twinx()
+        ax1.scatter(effective_tax, air, color='g')
+        ax2.scatter(effective_tax, water, color='b')
+
+        ax1.set_xlabel('State-Local Effective Tax Rate Percentage')
+        ax1.set_ylabel('Air Quality', color='g')
+        ax2.set_ylabel('Public Drinking Water', color='b')
+
+        plt.show()
+
+    dfNew = df.loc[:, ['State-Local Effective Tax Rate Percentage', 'Air Quality', 'Public Drinking Water']]
+    dfNew.to_csv('Data/Tax_vs_State_Metrics.csv', index=False)
+
+
 if __name__ == '__main__':
     votes_per_person('Data/FullData.csv')
+    tax_vs_metrics('Data/FullData.csv')
