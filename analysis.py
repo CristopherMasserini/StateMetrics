@@ -28,12 +28,18 @@ def tax_vs_metrics(data_file, columns):
     df = pd.read_csv(data_file)
 
     dfNew = df.loc[:, columns]
+    dfNew['State Average'] = dfNew.iloc[:, 2:].mean(axis=1)
+    dfNew['Tax Rank'] = dfNew['State-Local Effective Tax Rate Percentage'].rank()
+
     dfNew.to_csv('Data/Tax_vs_State_Metrics.csv', index=False)
 
 
 if __name__ == '__main__':
     votes_per_person('Data/FullData.csv')
     tax_vs_metrics('Data/FullData.csv',
-                   ['State-Local Effective Tax Rate Percentage',
+                   ['State',
+                    'State-Local Effective Tax Rate Percentage',
                     'Air Quality',
-                    'Public Drinking Water'])
+                    'Public Drinking Water',
+                    'PublicSchoolOverallRanking',
+                    'PublicSchoolStudentSafety'])
